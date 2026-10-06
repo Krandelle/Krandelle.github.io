@@ -1,7 +1,9 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, useMotionValue, useTransform } from 'framer-motion';
+import ResumeModal from './ResumeModal';
 
 export default function Hero() {
+  const [showResume, setShowResume] = useState(false);
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
@@ -14,9 +16,11 @@ export default function Hero() {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [mouseX, mouseY]);
 
-  // Create transform values for the mask
-  const maskX = mouseX;
-  const maskY = mouseY;
+  // Simpler mask that works
+  const maskImage = useTransform(
+    [mouseX, mouseY],
+    ([x, y]) => `radial-gradient(circle 300px at ${x}px ${y}px, transparent 0%, black 100%)`
+  );
 
   const pcbPattern = `url("data:image/svg+xml,%3Csvg width='120' height='120' viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10 10 L50 10 L50 50 M70 10 L110 10 L110 70 M10 70 L10 110 L70 110' stroke='%230ea5e9' stroke-width='1.5' fill='none' opacity='0.4'/%3E%3Ccircle cx='10' cy='10' r='3' fill='%230ea5e9' opacity='0.6'/%3E%3Ccircle cx='50' cy='50' r='4' fill='%230ea5e9' opacity='0.6'/%3E%3Ccircle cx='110' cy='10' r='3' fill='%230ea5e9' opacity='0.6'/%3E%3Ccircle cx='110' cy='70' r='4' fill='%230ea5e9' opacity='0.6'/%3E%3Ccircle cx='10' cy='110' r='3' fill='%230ea5e9' opacity='0.6'/%3E%3Ccircle cx='70' cy='110' r='4' fill='%230ea5e9' opacity='0.6'/%3E%3C/svg%3E")`;
 
@@ -36,7 +40,7 @@ export default function Hero() {
   return (
     <section id="home" className="h-screen flex flex-col justify-center items-center px-6 bg-slate-900 text-white relative overflow-hidden">
       
-      {/* LAYER 1: PCB Board Background */}
+      {/* LAYER 1: PCB Background */}
       <div 
         className="absolute inset-0 z-0"
         style={{ 
@@ -45,19 +49,13 @@ export default function Hero() {
         }}
       />
 
-      {/* LAYER 2: Blue Overlay with Cursor Mask - Using motion.div for smooth updates */}
+      {/* LAYER 2: Blue Overlay with Mouse Mask */}
       <motion.div 
         className="absolute inset-0 z-[1]"
         style={{
           background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)',
-          maskImage: useTransform(
-            [maskX, maskY],
-            ([x, y]) => `radial-gradient(circle 300px at ${x}px ${y}px, transparent 0%, black 100%)`
-          ),
-          WebkitMaskImage: useTransform(
-            [maskX, maskY],
-            ([x, y]) => `radial-gradient(circle 300px at ${x}px ${y}px, transparent 0%, black 100%)`
-          ),
+          WebkitMaskImage: maskImage,
+          maskImage: maskImage,
         }}
       />
 
@@ -87,7 +85,7 @@ export default function Hero() {
         />
       ))}
 
-      {/* Content with Alyssa-style animations */}
+      {/* Content */}
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -106,16 +104,16 @@ export default function Hero() {
           </h1>
         </motion.div>
         
-        {/* Tagline */}
+        {/* Tagline - UPDATED */}
         <motion.div variants={itemVariants} className="text-center mb-2">
           <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-light text-slate-300">
-            Front-End & <span className="text-cyan-400 font-medium">Software Developer</span>
+            Full Stack Developer & <span className="text-cyan-400 font-medium">IT Professional</span>
           </h2>
         </motion.div>
         
-        {/* Description */}
+        {/* Description - UPDATED */}
         <motion.p variants={itemVariants} className="text-center max-w-xl mx-auto text-slate-400 text-sm md:text-base mb-6">
-          I craft <span className="text-white font-medium">modern web interfaces</span> that bridge the gap to <span className="text-white font-medium">physical hardware</span>.
+          BSIT graduate building <span className="text-white font-medium">scalable web applications</span> with modern architecture, from <span className="text-white font-medium">React/Electron desktop apps</span> to <span className="text-white font-medium">full-stack PHP systems</span>.
         </motion.p>
 
         {/* CTA Buttons */}
@@ -142,20 +140,22 @@ export default function Hero() {
             </span>
           </motion.a>
           
-          <motion.a 
-            href="#" 
-            className="px-6 py-2.5 border-2 border-slate-600 hover:border-cyan-500/70 hover:bg-slate-800/50 rounded-lg font-medium text-sm transition-all"
+          <motion.button
+            type="button"
+            onClick={() => setShowResume(true)}
+            className="px-6 py-2.5 border-2 border-slate-600 hover:border-blue-500/70 hover:bg-slate-800/50 rounded-lg font-medium text-sm transition-all cursor-pointer"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
             Resume
-          </motion.a>
+          </motion.button>
         </motion.div>
 
         {/* Social Links */}
         <motion.div variants={itemVariants} className="flex justify-center items-center gap-6">
           {[
             { name: 'GitHub', href: 'https://github.com/Krandelle', icon: 'M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z' },
+            { name: 'LinkedIn', href: 'https://linkedin.com/in/krandelle-kalaw-8a91652a1/', icon: 'M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z' },
             { name: 'Email', href: 'mailto:krandellek@gmail.com', icon: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' }
           ].map((social) => (
             <motion.a
@@ -187,6 +187,9 @@ export default function Hero() {
           ))}
         </motion.div>
       </motion.div>
+      
+      {/* Resume Modal */}
+      <ResumeModal isOpen={showResume} onClose={() => setShowResume(false)} />
     </section>
   );
 }
