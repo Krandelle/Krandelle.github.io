@@ -5,18 +5,40 @@ export default function Projects() {
   const projects = [
     {
       title: 'LaserPix',
-      subtitle: 'Desktop Laser Controller',
-      description: 'Engineered a robust desktop application using React 19 and Electron 39 with USB serial communication for ESP32-based GRBL controllers.',
-      stack: ['React 19', 'Electron', 'Node.js', 'ESP32'],
+      subtitle: 'Desktop Laser Controller & Image Processing System',
+      description: 'Engineered a robust full-stack desktop application using React 19 (Frontend) and Node.js/Electron 39 (Backend), featuring a modern UI for real-time hardware control and pixel-perfect image processing.',
+      details: [
+        'Developed a highly reliable backend communication layer using Node.js serialport, enabling auto-detection, dynamic baud rate management, and seamless G-code streaming to ESP32-based GRBL controllers.',
+        'Secured the application architecture using contextBridge and preload.js to safely expose native Node.js backend APIs to the React frontend without compromising system security boundaries.'
+      ],
+      stack: ['React 19', 'Electron 39', 'Node.js', 'serialport', 'GRBL', 'ESP32'],
       github: 'https://github.com/Krandelle/LaserPix',
+      liveUrl: null,
       color: 'from-blue-500 to-purple-600',
-      // Add your actual image paths here
       images: [
         { type: '3d', alt: 'LaserPix 3D Model' },
         { type: 'image', src: '/laserpix/laserpix-clean.png', alt: 'LaserPix Machine' },
         { type: 'image', src: '/laserpix/Laserpix-software.png', alt: 'LaserPix Software' },
         { type: 'image', src: '/laserpix/LaserPixDefended.jpg', alt: 'LaserPix Defended' },
-            ],
+      ],
+    },
+    {
+      title: 'Happy-Cars',
+      subtitle: 'Full-Stack Car Rental & Booking System',
+      description: 'Developed a dynamic, full-stack web application using PHP and MySQL to manage vehicle inventory, user bookings, and administrative operations.',
+      details: [
+        'Designed and implemented a relational database schema to handle complex data relationships between users, vehicles, and reservation records.',
+        'Built a comprehensive booking system with date/time selection, allowing users to reserve vehicles with specific pickup schedules and hourly time slots.',
+        'Created detailed vehicle listings with specifications including transmission type, fuel type, seating capacity, and comprehensive descriptions.',
+        'Implemented core CRUD operations and server-side session management for secure user authentication and role-based access control.'
+      ],
+      stack: ['PHP', 'MySQL', 'HTML5', 'CSS3', 'JavaScript', 'XAMPP'],
+      github: 'https://github.com/Krandelle/Happy-Cars',
+      liveUrl: 'https://happy-cars-demo.freedev.app',
+      color: 'from-cyan-500 to-blue-600',
+      images: [
+        { type: 'live', alt: 'Happy-Cars Live Demo' },
+      ],
     },
   ];
 
@@ -39,9 +61,6 @@ export default function Projects() {
 
   return (
     <section id="projects" className="py-32 px-6 text-white relative overflow-hidden">
-      {/* Animated background */}
-      
-      
       <div className="max-w-6xl mx-auto relative z-10">
         {/* Section Header */}
         <motion.div 
@@ -137,6 +156,22 @@ export default function Projects() {
                       {project.description}
                     </motion.p>
 
+                    {/* Details */}
+                    <motion.ul
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.35 }}
+                      className="space-y-2 mb-8"
+                    >
+                      {project.details.map((detail, i) => (
+                        <li key={i} className="text-slate-400 text-sm flex items-start gap-2">
+                          <span className="text-blue-400 mt-1">▹</span>
+                          <span>{detail}</span>
+                        </li>
+                      ))}
+                    </motion.ul>
+
                     {/* Tech Stack */}
                     <motion.div 
                       initial={{ opacity: 0, y: 20 }}
@@ -159,39 +194,33 @@ export default function Projects() {
                       ))}
                     </motion.div>
 
-                    {/* Links */}
-                    {/* Links */}
-<div className="inline-block">
-  {/* Links */}
-<motion.div
-  initial={{ opacity: 0 }}
-  whileInView={{ opacity: 1 }}
-  viewport={{ once: true }}
-  transition={{ delay: 0.5 }}
-  className="inline-block"
->
-  <a 
-    href={project.github} 
-    target="_blank" 
-    rel="noopener noreferrer"
-    className="group inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-semibold transition-all px-4 py-2 -mx-4 -my-2 rounded-lg hover:bg-blue-500/10 cursor-pointer"
-  >
-    <span className="relative z-10">View on GitHub</span>
-    <motion.svg 
-      className="w-5 h-5 flex-shrink-0 relative z-10" 
-      fill="none" 
-      stroke="currentColor" 
-      viewBox="0 0 24 24"
-      animate={{ x: [0, 3, 0] }}
-      transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-    </motion.svg>
-    {/* Invisible full-area hit box */}
-    <span className="absolute inset-0"></span>
-  </a>
-</motion.div>
-</div>
+                    {/* GitHub Link */}
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      whileInView={{ opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: 0.5 }}
+                      className="inline-block"
+                    >
+                      <a 
+                        href={project.github} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="group inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-semibold transition-all px-4 py-2 -mx-4 -my-2 rounded-lg hover:bg-blue-500/10 cursor-pointer"
+                      >
+                        <span className="relative z-10">View on GitHub</span>
+                        <motion.svg 
+                          className="w-5 h-5 flex-shrink-0 relative z-10" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          viewBox="0 0 24 24"
+                          animate={{ x: [0, 3, 0] }}
+                          transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 3 }}
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                        </motion.svg>
+                      </a>
+                    </motion.div>
                   </div>
 
                   {/* Carousel - Visual Element */}
@@ -202,7 +231,7 @@ export default function Projects() {
                     transition={{ delay: 0.3 }}
                     className="w-full lg:w-2/5 h-[400px] rounded-2xl overflow-hidden"
                   >
-                    <ProjectCarousel images={project.images} />
+                    <ProjectCarousel images={project.images} liveUrl={project.liveUrl} />
                   </motion.div>
                 </div>
               </div>

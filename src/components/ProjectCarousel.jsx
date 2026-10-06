@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import LaserPixModel from './LaserPixModel';
 
-export default function ProjectCarousel({ images }) {
+export default function ProjectCarousel({ images, liveUrl }) {
   const [[page, direction], setPage] = useState([0, 0]);
 
   const paginate = (newDirection) => {
@@ -37,19 +37,94 @@ export default function ProjectCarousel({ images }) {
     }),
   };
 
+  // Check if this is a single live demo (no carousel needed)
+  const isSingleLiveDemo = images.length === 1 && images[0].type === 'live' && liveUrl;
+
+  if (isSingleLiveDemo) {
+    return (
+      <div className="w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-slate-900 to-slate-800 border border-slate-700 shadow-2xl flex items-center justify-center p-8" style={{ pointerEvents: 'auto' }}>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center max-w-sm mx-auto"
+        >
+          {/* Icon */}
+          <motion.div 
+            initial={{ scale: 0.8, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-blue-500/30"
+          >
+            <ExternalLink className="w-10 h-10 text-white" />
+          </motion.div>
+          
+          {/* Title */}
+          <motion.h3 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="text-2xl font-bold text-white mb-3"
+          >
+            Live Website
+          </motion.h3>
+          
+          {/* Description */}
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-slate-400 text-sm mb-8 leading-relaxed"
+          >
+            This project is hosted externally. Click below to visit the live site.
+          </motion.p>
+          
+          {/* CTA Button */}
+
+<motion.a
+  href={liveUrl}
+  target="_blank"
+  rel="noopener noreferrer"
+  initial={{ opacity: 0, scale: 0.95 }}
+  animate={{ opacity: 1, scale: 1 }}
+  transition={{ delay: 0.5 }}
+  whileHover={{ scale: 1.05, y: -2 }}
+  whileTap={{ scale: 0.95 }}
+  className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-600/25 mb-4 relative z-10"
+  style={{ pointerEvents: 'auto' }}
+>
+  <span>View Live Site</span>
+  <ExternalLink className="w-5 h-5" />
+</motion.a>
+          
+          {/* URL */}
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="text-slate-500 text-xs font-mono tracking-wide"
+          >
+            {liveUrl.replace(/^https?:\/\//, '')}
+          </motion.p>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // Regular carousel for multiple items
   return (
     <div className="relative w-full h-full flex items-center justify-center overflow-hidden">
       {/* Left Arrow */}
       <motion.button
         onClick={() => paginate(-1)}
-        className="absolute left-4 z-20 w-12 h-12 rounded-full bg-slate-800/80 backdrop-blur-sm border border-slate-700 flex items-center justify-center text-white hover:bg-blue-600 hover:border-blue-500 transition-all duration-300 group"
+        className="absolute left-4 z-20 w-10 h-10 rounded-full bg-slate-800/80 backdrop-blur-sm border border-slate-700 flex items-center justify-center text-white hover:bg-blue-600 transition-all group"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
       >
-        <ChevronLeft className="w-6 h-6 group-hover:-translate-x-0.5 transition-transform" />
+        <ChevronLeft className="w-5 h-5 group-hover:-translate-x-0.5 transition-transform" />
       </motion.button>
 
-      {/* Main Carousel Container - Flexible height based on content */}
+      {/* Main Carousel Container */}
       <div className="relative w-full h-full flex items-center justify-center">
         <AnimatePresence initial={false} custom={direction} mode="wait">
           <motion.div
@@ -66,10 +141,42 @@ export default function ProjectCarousel({ images }) {
             }}
             className="absolute w-full h-full flex items-center justify-center p-4"
           >
-            <div className="w-full h-full rounded-2xl overflow-hidden bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-slate-700 shadow-2xl flex items-center justify-center">
+            <div className="w-full h-full rounded-2xl overflow-hidden bg-slate-900 border border-slate-700 shadow-2xl flex items-center justify-center">
               {images[currentIndex].type === '3d' ? (
                 <div className="w-full h-full">
                   <LaserPixModel />
+                </div>
+              ) : images[currentIndex].type === 'live' && liveUrl ? (
+                <div className="text-center p-8">
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center"
+                  >
+                    <ExternalLink className="w-10 h-10 text-white" />
+                  </motion.div>
+                  
+                  <h3 className="text-2xl font-bold text-white mb-2">Live Website</h3>
+                  <p className="text-slate-400 text-sm mb-6 max-w-xs mx-auto">
+                    This project is hosted externally. Click below to visit the live site.
+                  </p>
+                  
+                  <motion.a
+                    href={liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-600/25"
+                  >
+                    <span>View Live Site</span>
+                    <ExternalLink className="w-5 h-5" />
+                  </motion.a>
+                  
+                  <p className="text-slate-500 text-xs mt-4 font-mono">
+                    {liveUrl.replace(/^https?:\/\//, '')}
+                  </p>
                 </div>
               ) : (
                 <img
@@ -86,11 +193,11 @@ export default function ProjectCarousel({ images }) {
       {/* Right Arrow */}
       <motion.button
         onClick={() => paginate(1)}
-        className="absolute right-4 z-20 w-12 h-12 rounded-full bg-slate-800/80 backdrop-blur-sm border border-slate-700 flex items-center justify-center text-white hover:bg-blue-600 hover:border-blue-500 transition-all duration-300 group"
+        className="absolute right-4 z-20 w-10 h-10 rounded-full bg-slate-800/80 backdrop-blur-sm border border-slate-700 flex items-center justify-center text-white hover:bg-blue-600 transition-all group"
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.95 }}
       >
-        <ChevronRight className="w-6 h-6 group-hover:translate-x-0.5 transition-transform" />
+        <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
       </motion.button>
 
       {/* Dots Indicator */}
